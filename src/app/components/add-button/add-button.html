@@ -1,0 +1,8 @@
+<button class="flex items-center justify-center w-full gap-1 rounded-lg bg-caribbean-green
+        hover:bg-mountain-meadow py-2 px-4 text-xs font-bold uppercase text-black 
+        shadow-md transition focus:bg-bangladesh-green" (click)="clicked.emit()" type="button">
+        <svg class="w-5 h-5" aria-hidden="true" focusable="false">
+            <use [attr.href]="'/icons/sprite.svg#' + icon()" />
+        </svg>
+        {{ label() }}
+</button>

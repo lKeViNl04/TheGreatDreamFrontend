@@ -1,0 +1,40 @@
+@for (box of boxesSignal(); track box.id) {
+  <div class="mb-4 border border-white/10 rounded-lg overflow-hidden">
+    <!-- Encabezado del acordeón -->
+    <button (click)="toggleBox(box.id)"
+      class="w-full flex justify-between items-center px-4 py-3 text-left bg-white/5 hover:bg-white/10 text-white font-semibold">
+      <span>{{ box.name }}</span>
+      <svg [ngClass]="{ 'rotate-180': openedBoxId() === box.id }" class="w-5 h-5 transition-transform">
+        <use xlink:href="/icons/sprite.svg#Dropdown" />
+      </svg>
+    </button>
+    <!-- Contenido expandido -->
+    @if (openedBoxId() === box.id) {
+      <div class="px-4 py-4 bg-white/5 text-white space-y-4">
+        <!-- Search interno de la tabla -->
+        <div class="relative w-full ">
+          <app-search-input
+            [searchTerm]="searchTerms()[box.id]"
+            (searchTermChange)="updateSearchTerm(box.id, $event)"
+            (onSearch)="resetPage(box.id)"></app-search-input>
+        </div>
+        <!-- Tabla interna -->
+          <app-generic-table
+            [columns]="columnsSignal()"
+            [data]="paginatedItems(box)()"
+            (edit)="onEdit($event)"
+            (delete)="onDelete($event)" />
+        <!-- Paginación interna -->
+        <app-pagination
+          [currentPage]="currentPages()[box.id] || 1"
+          [totalPages]="totalPages(box)()"
+          (pageChanged)="onPageChange(box.id, $event)" />
+      </div>
+    }
+
+    <div class="px-4 py-2 bg-white/10 text-white font-semibold">
+      {{ getTotalLabel(box) }}: {{ getTotalAmount(box) }}
+    </div>
+  </div>
+}
+

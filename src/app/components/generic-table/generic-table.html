@@ -1,0 +1,41 @@
+<div class="w-full overflow-x-auto">
+  @if (data().length>0) {
+  <table class="w-full text-left table-auto min-w-max text-xs sm:text-sm">
+    <thead>
+      <tr>
+        @for (col of columns(); track col.key) {
+          <th class="p-3 sm:p-4 border-y bg-blue-gray-50/50">{{ col.label }}</th>
+        }
+        <th class="p-3 sm:p-4 border-y bg-blue-gray-50/50 text-center">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+        @for (row of data(); track trackRowBy($index, row)) {
+          <tr>
+            @for (col of columns(); track col.key) {
+              <td class="p-3 sm:p-4 border-b tr-hover-gradient" [innerHTML]="row[col.key]"></td>
+            }
+            <td class="p-3 sm:p-4 border-b text-center">
+              <div class="flex justify-center gap-2">
+                <button (click)="onEdit(row)"
+                        class="w-9 h-9 rounded-lg hover:bg-caribbean-green flex items-center justify-center">
+                  <svg class="w-5 h-5">
+                    <use xlink:href="/icons/sprite.svg#Pencil" />
+                  </svg>
+                </button>
+                <button (click)="onDelete(row)"
+                        class="w-9 h-9 rounded-lg hover:bg-red-500 flex items-center justify-center">
+                  <svg class="w-5 h-5">
+                    <use xlink:href="/icons/sprite.svg#Trash" />
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+    </tbody>
+  </table>
+  } @else {
+    <app-not-results-found />
+  }
+</div>

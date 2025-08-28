@@ -1,0 +1,24 @@
+<div> 
+      @if (label()) {
+      <label [for]="name()" class="block text-sm font-medium text-white">
+        {{ label() }}
+      </label>
+      }
+      <textarea
+        [id]="name()"
+        [name]="name()"
+        [ngModel]="model()"
+        (ngModelChange)="modelChange.emit($event)"
+        [attr.placeholder]="placeholder()"
+        [required]="required()"
+        [ngClass]= "['mt-1 rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-500
+            focus:border-caribbean-green focus:outline-none focus:ring-2
+            focus:ring-caribbean-green', textareaClass() ]"
+            ></textarea>
+        @if (showError()) {
+        <div  class="text-red-500 text-xs mt-1">
+          {{ label() }} is required
+        </div>
+        }
+        
+</div>

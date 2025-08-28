@@ -1,0 +1,50 @@
+<aside class="w-60 fixed transition-transform ease-in-out duration-1000 z-50 flex h-full bg-black"
+    [class.-translate-x-48]="!sidebarOpen()" [class.translate-x-none]="sidebarOpen()">
+    <!-- Toolbar con logos -->
+    <div class="max-toolbar absolute top-2 w-full -right-6 transition-transform ease-in duration-300 flex items-center justify-between border-4 border-caribbean-green rounded-full h-12"
+        [class.translate-x-24]="!sidebarOpen()" [class.scale-x-0]="!sidebarOpen()" [class.translate-x-0]="sidebarOpen()">
+        <div class="flex pl-4 items-center">
+            <div class="relative group w-full inline-block">
+                <img src="/imgs/TheGreatDreamLogo.svg" alt="logo" class="w-40 block transition-opacity duration-300" />
+            </div>
+        </div>
+    </div>
+    <!-- Botón toggle -->
+    <div (click)="toggleSidebar()"
+        class="-right-6 transition-transform ease-in-out duration-500 flex border-4 border-caribbean-green bg-white/50 hover:bg-caribbean-green absolute top-2 p-3 rounded-full text-dark-green hover:rotate-45">
+        <svg class="w-4 h-4">
+            <use href="/icons/sprite.svg#FourBox" />
+        </svg>
+    </div>
+    <!-- SIDEBAR GRANDE -->
+    @if (sidebarOpen()) {
+    <div class="max text-anti-flash-white mt-20 flex-col space-y-2 w-full h-[calc(100vh)] flex">
+        @for (item of items; track $index) {
+        <a [routerLink]="item.link" [routerLinkActive]="['active', 'bg-mountain-meadow','rounded-full']" >
+            <div
+                class="group hover:ml-4 w-full text-anti-flash-white hover:bg-mountain-meadow p-2 pl-8 rounded-full transform ease-in-out duration-300 flex flex-row items-center space-x-3">
+                <svg class="w-4 h-4 fill-anti-flash-white">
+                    <use [attr.href]="item.svg" />
+                </svg>
+                <div>{{ item.name }}</div>
+            </div>
+        </a>
+        }
+    </div>
+    }
+    <!-- SIDEBAR MINI -->
+    @if (!sidebarOpen()) {
+    <div class="mini mt-20 flex flex-col space-y-2 w-full h-[calc(100vh)]">
+        @for (item of items; track $index) {
+        <a [routerLink]="item.link" [routerLinkActive]="['active', 'bg-mountain-meadow','rounded-full']" >
+            <div
+                class="group hover:ml-4 justify-end pr-5 w-full  hover:bg-mountain-meadow p-3 rounded-full transform ease-in-out duration-300 flex">
+                <svg class="w-4 h-4 fill-anti-flash-white ">
+                    <use [attr.href]="item.svg" />
+                </svg>
+            </div>
+        </a>
+        }
+    </div>
+    }
+</aside>

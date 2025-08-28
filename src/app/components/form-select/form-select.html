@@ -1,0 +1,19 @@
+<div>
+    <label class="block text-sm font-medium text-white" [attr.for]="name()">{{ label() }}</label>
+    <select [attr.id]="name()" [name]="name()" [ngModel]="model()" (ngModelChange)="modelChange.emit($event)"
+    [required]="required()" [attr.aria-invalid]="showError() ? 'true' : null"
+    [attr.aria-required]="required() ? 'true' : null" [ngClass]="[
+    'mt-1 bg-neutral-dark rounded-md border border-gray-300 px-3 py-2 text-sm  focus:border-caribbean-green focus:outline-none focus:ring-2 focus:ring-caribbean-green',
+    selectClass()
+    ]">
+    <option [ngValue]="undefined" disabled hidden>Select an option</option>
+    @for (opt of options(); track $index) {
+        <option [ngValue]="opt.value">{{ opt.label | uppercase }}</option>
+    }
+    </select>
+    @if (showError()) {
+    <div class="text-red-500 text-xs mt-1">
+        {{ label() }} is required
+    </div>
+    }
+</div>

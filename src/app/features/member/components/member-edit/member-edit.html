@@ -1,0 +1,35 @@
+<!-- Overlay -->
+<div class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <!-- Modal -->
+    <div class="bg-neutral-dark rounded-xl shadow-lg w-full max-w-md p-6 relative">
+        <h2 class="text-xl font-bold text-white mb-4">Edit Member</h2>
+        <!-- Formulario -->
+        <form (ngSubmit)="submitForm()" class="flex flex-col gap-4">
+            @if (editMember(); as _member) {
+            <!-- First Name -->
+            <app-form-input label="First Name" name="firstName" [(model)]="_member.firstName" [required]="true"
+                placeholder="Add a FirstName" inputClass="w-full" (modelChange)="patchEdit({ firstName: $event })" />
+            <!-- Last Name -->
+            <app-form-input label="Last Name" name="lastName" [(model)]="_member.lastName" [required]="true"
+                placeholder="Add a LastName" inputClass="w-full" (modelChange)="patchEdit({ lastName: $event })" />
+            <!-- Slots -->
+            <app-form-input label="Slots" name="slots" [(model)]="_member.slots" [required]="true"
+                placeholder="Add a Slots" inputClass="w-full" (modelChange)="patchEdit({ slots: $event })" />
+            <!-- Status -->
+            <app-form-select label="Status" name="status" [(model)]="_member.status" [options]="statuses"
+                selectClass="w-full" (modelChange)="patchEdit({ status: $event })" [required]="true" />
+            }
+                <!-- Botones -->
+            <div class="flex justify-end gap-2 pt-4 border-t border-white/10">
+                <button type="button" (click)="onCancel()"
+                    class="px-4 py-2 rounded-md border border-gray-300 text-sm text-white hover:bg-gray-100 hover:text-black">
+                    Cancel
+                </button>
+                <button type="submit"
+                    class="px-4 py-2 rounded-md bg-caribbean-green text-sm font-bold text-white hover:bg-mountain-meadow">
+                    Save
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+<div class="relative flex flex-col w-full h-full text-white shadow-md rounded-xl bg-clip-border">
+    <div class="relative mx-4 sm:mx-8 mt-4 overflow-hidden text-white rounded-none bg-clip-border">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+            <div>
+                <h1 class="text-2xl sm:text-xl font-bold">Members</h1>
+                <p class="mt-1 text-sm text-white/80">
+                    See information about all members
+                </p>
+            </div>
+            <div class="flex flex-col md:flex-row items-stretch gap-3 w-full md:w-auto">
+                <!-- Search -->
+                <div class="relative w-full md:w-72">
+                    <app-search-input [searchTerm]="searchTerm()" (searchTermChange)="onSearchChange($event)" />
+                </div>
+                <!-- Add Member -->
+                <app-add-button label="Add Member" icon="AddMember" (clicked)="showAddModal.set(true)" />
+                <!-- Add Member Modal -->
+                @if (showAddModal()) {
+                <app-member-add (close)="showAddModal.set(false)" (save)="addMember($event)" />
+                }
+            </div>
+        </div>
+    </div>
+    <!-- Tabla -->
+    <div class="p-4 sm:p-6">
+        <app-generic-table [columns]="tableColumns" [data]="tableData()" (edit)="openEditModal($event)"
+            (delete)="openDeleteModal($event)" />
+        <!-- Edit Member Modal -->
+        @if (showEditModal() && selectedMember() !== null) {
+        <app-member-edit [member]="selectedMember()!" (close)="showEditModal.set(false)"
+            (edit)="updateMember($event)" />}
+        <!-- Delete Member Modal -->
+        @if (showDeleteModal() && selectedMember() !=null) {
+            <app-member-delete [member]="selectedMember()!" (close)="showDeleteModal.set(false)"
+            (delete)="deleteMember($event)" />}
+        
+    </div>
+    <!-- Paginación -->
+    <app-pagination [currentPage]="currentPage()" [totalPages]="totalPages()" (pageChanged)="onPageChange($event)" />
+</div>

@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+   /* 🔹 Colores */
+  --color-neutral-dark:    #1b1b1b;   /* Casi negro - texto principal en fondo claro */
+  /* Primary Colors */
+  --color-rich-black:        #001B16;  /* Fondo profundo, headers, dark UI */
+  --color-dark-green:        #022221;  /* Navbar, secciones oscuras */
+  --color-bangladesh-green:  #00624C;  /* Botones primarios, íconos clave */
+  --color-mountain-meadow:   #2CC5A9;  /* Hovers, acentos llamativos */
+  --color-caribbean-green:   #00DFB1;  /* Links, botones secundarios */
+  --color-anti-flash-white:  #F1F7F5;  /* Fondos claros, texto sobre dark */
+
+  /* Secondary Colors */
+  --color-pine:              #063B28;  /* Detalles oscuros, bordes intensos */
+  --color-basil:             #084F3A;  /* Hover oscuro, iconografía secundaria */
+  --color-forest:            #095544;  /* Variación para inputs o backgrounds */
+  --color-frog:              #77B9D9;  /* Elementos destacados (con cuidado) */
+  --color-mint:              #2FA68C;  /* Tooltips, badges, detalles UI */
+  --color-stone:             #707D7D;  /* Texto secundario, iconos neutros */
+  --color-pistachio:         #ACD6C4;  /* Fondos suaves, tarjetas claras */
+
+  /* 🔹 Breakpoints */
+  --breakpoint-xs: 321px;
+}
