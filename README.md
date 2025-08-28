@@ -67,6 +67,13 @@ TheGreatDreamFrontend/
 ├── package.json # Dependencies and scripts
 └── README.md # This file
 ```
+---
+
+## Recent Updates
+
+- **Entity structure refactoring**: The project's entities (data model) were reorganized to improve consistency and maintainability.
+- **Base abstractions added**: Entities now inherit from base classes or implement common interfaces, enabling better design patterns, code reuse, and testing.
+- **Better code organization**: The code is now cleaner, more modular, and ready to scale, thanks to this central abstraction layer.
 
 ---
 
