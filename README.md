@@ -1,6 +1,6 @@
 # 🌙 The Great Dream – Frontend
 
-> ⚡ This repository is linked to the backend: **XXX**
+> ⚡ This repository is linked to the backend: **[TheGreatDreamBackend](https://github.com/lKeViNl04/TheGreatDreamBackend)**
 
 ---
 
