@@ -1,29 +1,19 @@
-import { Component, inject, ChangeDetectionStrategy, signal, output, computed, input, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component, computed} from '@angular/core';
 
 import { CashboxDTO } from '../../models/cashbox-dto';
 
-import { FormSelect } from '../../../../../../components/form-select/form-select';
-import { NotificationService } from '../../../../../../services/notification-service/notification-service';
+import { FormSelect } from '../../../../../../shared/components/form-select/form-select';
+import { BaseFormEdit } from '../../../../../../shared/abstract/base-form-edit';
+import { ModalShell } from '../../../../../../shared/mod/modal-shell/modal-shell';
 
 
 @Component({
   selector: 'app-cashbox-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, FormSelect],
+  imports: [FormSelect, ModalShell],
   templateUrl: './cashbox-edit.html',
-   
 })
-export class CashboxEdit {
-  // ===== Inyección de servicios =====
-  private readonly notification = inject(NotificationService);
-  // ===== Inputs & Outputs =====
-  readonly editCashbox = signal<CashboxDTO | null>(null);
-  readonly cashbox = input<CashboxDTO | null>(null);
-
-  readonly close = output<void>();
-  readonly edit = output<CashboxDTO>();
+export class CashboxEdit extends BaseFormEdit<CashboxDTO>{
   // ===== Estados internos =====
   readonly years = Array.from({ length: 10 }, (_, i) => {
     const year = new Date().getFullYear() - i;
@@ -44,34 +34,24 @@ export class CashboxEdit {
     { label: 'Noviembre', value: 11 },
     { label: 'Diciembre', value: 12 }
   ];
-
   // ====== Constructor ====
-  constructor() {
-    effect(() => {
-    const cashbox = this.cashbox();
-    this.editCashbox.set(cashbox ? structuredClone(cashbox) : null);
-    });
-  }
+  constructor() {super();}
   // ===== Propiedades computadas =====
   readonly isMonthValid = computed(() => {
-    const cashbox = this.editCashbox();
-    return cashbox ? cashbox.month && cashbox.month >= 1 && cashbox.month <= 12 : false;
-  }
-  );
+    const cashbox = this.editEntity();
+    return cashbox ? cashbox.month >= 1 && cashbox.month <= 12 : false;
+  });
+
   readonly isYearValid = computed(() => {
-    const cashbox = this.editCashbox();
+    const cashbox = this.editEntity();
     return cashbox ? cashbox.year?.toString().length === 4 : false;
-  }
-  );
-  readonly formValid = computed(() =>
-    this.isMonthValid() &&
-    this.isYearValid()
-  );
-  // ===== Metodos privados =====
-  // Compara si los datos actuales son iguales a los originales
-  private isSame(): boolean {
-    const originalCashbox = this.cashbox();
-    const editableCashbox = this.editCashbox();
+  });
+  // ===== Override =====
+  override formValid = computed(() => this.isMonthValid() && this.isYearValid());
+
+  protected override isSame(): boolean {
+    const originalCashbox = this.entity();
+    const editableCashbox = this.editEntity();
     if (!originalCashbox || !editableCashbox) return false;
     return (
       originalCashbox.month === editableCashbox.month &&
@@ -79,37 +59,10 @@ export class CashboxEdit {
     );
   }
 
-  // ===== Métodos públicos =====
-  /*Valida y envía el formulario si los campos obligatorios están completos.*/
-  submitForm(): void {
-    if (!this.formValid()) {
-      this.notification.warn('Warn', 'Please fill in all required fields correctly: ' + [
-        !this.isMonthValid() && '"Month"',
-        !this.isYearValid() && '"Year"',
-      ].filter(Boolean).join(', '));
-      console.warn('Formulario inválido', {
-        month: this.isMonthValid(),
-        year: this.isYearValid()
-      });
-      return;
-    }
-
-    if (this.isSame()) {
-      this.notification.warn('warn', 'Please edit the box before saving.');
-      return;
-    }
-    const cashbox = this.editCashbox();
-    if (cashbox) {
-      this.edit.emit(cashbox);
-      this.close.emit();
-    }
-  }
-
-  patchEdit(patch: Partial<CashboxDTO>): void {
-    this.editCashbox.update(c => c ? { ...c, ...patch } : c);
-  }
-
-  onCancel(): void {
-    this.close.emit();
+  override invalidFields(): string[] {
+    return [
+      !this.isMonthValid() && '"Month"',
+      !this.isYearValid() && '"Year"',
+    ].filter(Boolean) as string[];
   }
 }

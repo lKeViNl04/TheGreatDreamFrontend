@@ -1,0 +1,21 @@
+<!-- Overlay -->
+<div class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+    <!-- Modal -->
+    <div class="bg-neutral-dark rounded-xl shadow-lg w-full max-w-md p-6 relative">
+        <!-- Title -->
+        <h2 class="text-xl font-bold text-white mb-4"><ng-content select="[modal-title]"></ng-content></h2>
+        <!-- Body-->
+        <ng-content select="[modal-body]"></ng-content>
+        <!-- Botones -->
+        <div class="flex justify-end gap-2 pt-4 border-t border-white/10">
+            <button type="button" (click)="onCancel()"
+                class="px-4 py-2 rounded-md border border-gray-300 text-sm text-white hover:bg-gray-200 hover:text-black">
+                Cancel
+            </button>
+            <button type="button" (click)="onConfirm()"
+                class="px-4 py-2 rounded-md bg-red-600 text-sm font-bold text-white hover:bg-red-700">
+                Delete
+            </button>
+        </div>
+    </div>
+</div>

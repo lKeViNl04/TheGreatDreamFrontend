@@ -1,37 +1,21 @@
-<!-- Overlay -->
-<div class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-    <!-- Modal -->
-    <div class="bg-neutral-dark rounded-xl shadow-lg w-full max-w-md p-6 relative">
-        <h2 class="text-xl font-bold text-white mb-6">Add Monthly Fee</h2>
-        <form (ngSubmit)="submitForm()" class="flex flex-col gap-4">
-            <!-- CashboxId -->
-            <app-form-select label="Cashbox ID" name="cashboxId" [required]="true" [options]="cashboxOptions()"
-                [(model)]="monthlyFee().cashBoxId" (modelChange)="patchMonthlyFee({ cashBoxId: $event })"
-                selectClass="w-full" />
-            <!-- MemberId -->
-            <app-form-select label="Member ID" name="memberId" [required]="true" [options]="memberOptions()"
-                [(model)]="monthlyFee().member" (modelChange)="patchMonthlyFee({ member: $event })" selectClass="w-full" />
-            <!-- Assigned Amount -->
-            <app-form-input label="Assigned Amount" name="assignedAmount" type="number"
-                placeholder="Add a Assigned Amount. Ej: 35000" [required]="true" [(model)]="monthlyFee().assignedAmount"
-                inputClass="w-full" (modelChange)="patchMonthlyFee({ assignedAmount: $event })"/>
-            <!-- Paid -->
-            <app-form-input label="Paid" name="paid" type="number" [required]="true" [(model)]="monthlyFee().paid"
-                inputClass="w-full" (modelChange)="patchMonthlyFee({ paid: $event })"/>
-            <!-- Status -->
-            <app-form-select label="Status" name="status" [required]="true" [options]="statusOptions"
-                [(model)]="monthlyFee().status" selectClass="w-full" (modelChange)="patchMonthlyFee({ status: $event })" />
-            <!-- Botones -->
-            <div class="flex justify-end gap-3 pt-4 border-t border-white/10">
-                <button type="button" (click)="onCancel()"
-                    class="px-4 py-2 rounded-md border border-gray-300 text-sm text-white hover:bg-red-500 hover:border-red-500">
-                    Cancel
-                </button>
-                <button type="submit"
-                    class="px-4 py-2 rounded-md bg-caribbean-green text-sm font-bold text-white hover:bg-mountain-meadow">
-                    Save
-                </button>
-            </div>
-        </form>
+<app-modal-shell (close)="onCancel()" (save)="submitForm()">
+    <span modal-title>Add Monthly Fee</span>
+    <div modal-body class="flex flex-col gap-4">
+        <!-- CashboxId -->
+        <app-form-select label="Cashbox ID" name="cashboxId" [required]="true" [options]="cashboxOptions()"
+            [(model)]="entity().cashBoxId" (modelChange)="patchEntityAdd({ cashBoxId: $event })" selectClass="w-full" />
+        <!-- MemberId -->
+        <app-form-select label="Member ID" name="memberId" [required]="true" [options]="memberOptions()"
+            [(model)]="entity().member" (modelChange)="patchEntityAdd({ member: $event })" selectClass="w-full" />
+        <!-- Assigned Amount -->
+        <app-form-input label="Assigned Amount" name="assignedAmount" type="number"
+            placeholder="Add a Assigned Amount. Ej: 35000" [required]="true" [(model)]="entity().assignedAmount"
+            inputClass="w-full" (modelChange)="patchEntityAdd({ assignedAmount: $event })" />
+        <!-- Paid -->
+        <app-form-input label="Paid" name="paid" type="number" [required]="true" [(model)]="entity().paid"
+            inputClass="w-full" (modelChange)="patchEntityAdd({ paid: $event })" />
+        <!-- Status -->
+        <app-form-select label="Status" name="status" [required]="true" [options]="statusOptions"
+            [(model)]="entity().status" selectClass="w-full" (modelChange)="patchEntityAdd({ status: $event })" />
     </div>
-</div>
+</app-modal-shell>

@@ -1,53 +1,35 @@
-<div class="relative flex flex-col w-full h-full text-white shadow-md rounded-xl bg-clip-border">
-    <div class="relative mx-4 sm:mx-8 mt-4 overflow-hidden text-white rounded-none bg-clip-border">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
-            <div>
-                <p class="mt-1 text-sm text-white/80">
-                    See information about all Cashboxs
-                </p>
-            </div>
-            <div class="flex flex-col md:flex-row items-stretch gap-3 w-full md:w-auto">
-                <!-- Search -->
-                <div class="relative w-full md:w-72">
-                    <app-search-input [(searchTerm)]="searchTerm" (searchTermChange)="onSearchChange($event)" />
-                </div>
-                <!-- Add Cashbox -->
-                <app-add-button label="Add Cashbox" icon="AddCashbox" (clicked)="showAddModal.set(true)" />
-                <!-- Add Cashbox Modal -->
-                @if (showAddModal()) {
-                <app-cashbox-add (close)="showAddModal.set(false)" (save)="addCashbox($event)" />
-                }
-            </div>
-        </div>
-        <div class="flex flex-wrap items-center gap-4 text-white text-base font-semibold">
-            <span class="text-green-400">
-                Total Collected: {{ totals().amountCollected | currency }}
-            </span>
-            <span class="text-white/70">|</span>
-            <span class="text-red-400">
-                Total Spent: {{ totals().spent | currency }}
-            </span>
-            <span class="text-white/70">|</span>
-            <span class="text-yellow-300">
-                Balance: {{ totals().balance | currency }}
-            </span>
-        </div>
+<app-entity-layout [subtitle]="'See information about all Cashboxes'" [(searchTerm)]="searchTerm"
+    [searchPlaceholder]="'Search Cashbox...'" [addButtonLabel]="'Add Cashbox'" [addButtonIcon]="'AddCashbox'"
+    [currentPage]="currentPage()" [totalPages]="totalPages()" (onAdd)="openAddModal()"
+    (onPageChange)="onPageChange($event)">
+    <!-- Totales -->
+    <div class="flex flex-wrap items-center gap-4 text-white text-base font-semibold mb-4">
+        <span class="text-green-400">
+            Total Collected: {{ totals().amountCollected | currency }}
+        </span>
+        <span class="text-white/70">|</span>
+        <span class="text-red-400">
+            Total Spent: {{ totals().spent | currency }}
+        </span>
+        <span class="text-white/70">|</span>
+        <span class="text-yellow-300">
+            Balance: {{ totals().balance | currency }}
+        </span>
     </div>
     <!-- Tabla -->
-    <div class="p-4 sm:p-6 overflow-x-auto">
-        <app-generic-table [columns]="tableColumns" [data]="tableData()" (edit)="openEditModal($event)"
-            (delete)="openDeleteModal($event)" />
-        <!-- Edit Cashbox Modal -->
-        @if (showEditModal() && selectedCashbox() !== null) {
-        <app-cashbox-edit [cashbox]="selectedCashbox()!" 
-            (close)="showEditModal.set(false)"(edit)="updateCashbox($event)" />
-        }
-        <!-- Delete Cashbox Modal -->
-        @if (showDeleteModal() && selectedCashbox() != null) {
-        <app-cashbox-delete [cashbox]="selectedCashbox()!" (close)="showDeleteModal.set(false)"
-            (delete)="deleteCashbox($event)" />
-        }
-    </div>
-    <!-- Paginación -->
-    <app-pagination [currentPage]="currentPage()" [totalPages]="totalPages()" (pageChanged)="onPageChange($event)" />
-</div>
+    <app-generic-table [columns]="tableColumns" [data]="tableData()" (edit)="openEditModal($event)"
+        (delete)="openDeleteModal($event)" />
+    <!-- Add Cashbox Modal -->
+    @if (showAddModal()) {
+    <app-cashbox-add (close)="showAddModal.set(false)" (save)="addEntity($event)" />
+    }
+    <!-- Edit Cashbox Modal -->
+    @if (showEditModal() && selectedEntity() !== null) {
+    <app-cashbox-edit [entity]="selectedEntity()!" (close)="showEditModal.set(false)" (edit)="updateEntity($event)" />
+    }
+    <!-- Delete Cashbox Modal -->
+    @if (showDeleteModal() && selectedEntity() !== null) {
+    <app-cashbox-delete [entity]="selectedEntity()!" (close)="showDeleteModal.set(false)"
+        (delete)="deleteEntity($event)" />
+    }
+</app-entity-layout>

@@ -1,37 +1,19 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, computed, input } from '@angular/core';
 
 import { MemberDTO } from '../../models/member-dto';
+import { BaseFormDelete } from '../../../../shared/abstract/base-form-delete';
+import { ModalConfirm } from '../../../../shared/mod/modal-confirm/modal-confirm';
 
 @Component({
   selector: 'app-member-delete',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './member-delete.html',
-   
+  imports: [ModalConfirm],
+  templateUrl: './member-delete.html'
 })
-export class MemberDelete {
+export class MemberDelete extends BaseFormDelete<MemberDTO>{
   // ===== Inputs & Outputs =====
-  readonly member = input.required<MemberDTO>();
-  readonly close = output<void>();
-  readonly delete = output<number>();
-
+  readonly entity = input.required<MemberDTO>();
   // ===== Estados internos =====
-  readonly memberId = computed(() => this.member()?.id ?? null);
-  readonly memberFirstname = computed(() => this.member()?.firstName ?? '');
-  readonly memberLastname = computed(() => this.member()?.lastName ?? '');
-
-  // ===== Métodos públicos =====
-  onCancel() {
-    this.close.emit();
-  }
-
-  onConfirm() {
-    const id = this.memberId();
-    if (id != null) {
-      this.delete.emit(id);
-      this.close.emit();
-    }
-  }
-
+  readonly memberFirstname = computed(() => this.entity()?.firstName ?? '');
+  readonly memberLastname = computed(() => this.entity()?.lastName ?? '');
 }

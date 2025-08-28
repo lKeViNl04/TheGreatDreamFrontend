@@ -1,45 +1,23 @@
-<div class="relative flex flex-col w-full h-full text-white shadow-md rounded-xl bg-clip-border">
-    <div class="relative mx-4 sm:mx-8 mt-4 overflow-hidden text-white rounded-none bg-clip-border">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
-            <div>
-                <p class="mt-1 text-sm text-white/80">
-                    See information about all Monthly Fee
-                </p>
-            </div>
-            <div class="flex flex-col md:flex-row items-stretch gap-3 w-full md:w-auto">
-                <!-- Search -->
-                <div class="relative w-full md:w-72">
-                    <app-search-input [(searchTerm)]="searchTerm" (onSearch)="filteredAccordionData()" />
-                </div>
-                <!-- Add MonthlyFee -->
-                <app-add-button label="Add Fee" icon="Finance" (clicked)="showAddModal.set(true)"></app-add-button>
-                <!-- Add MonthlyFee Modal -->
-                @if(showAddModal()){
-                <app-monthly-fee-add [cashboxOptions]="optionSelectCashboxId()" [memberOptions]="optionSelectMemberId()"
-                    (close)="showAddModal.set(false)" (save)="addMonthlyFee($event)" />
-                }
-            </div>
-        </div>
-    </div>
+<app-entity-layout [subtitle]="'See information about all Monthly Fees'" [(searchTerm)]="searchTerm"
+    [searchPlaceholder]="'Search Box...'" [addButtonLabel]="'Add Fee'" [addButtonIcon]="'Finance'"
+    [currentPage]="currentPage()" [totalPages]="totalPages()" (onAdd)="openAddModal()"
+    (onPageChange)="onPageChange($event)">
     <!-- Accordion -->
-    <div class="p-4 sm:p-6 overflow-x-auto">
-        @if (pageData().length > 0) {
-        <app-accordion-table [boxes]="pageData()" [columns]="tableColumns" (edit)="openEditModal($event)"
-            (delete)="openDeleteModal($event)" />
-        }@else {
-        <app-not-results-found />
-        }
-    </div>
+    <app-accordion-table [boxes]="filteredAccordionData()" [columns]="tableColumns" (edit)="openEditModal($event)"
+        (delete)="openDeleteModal($event)" />
+    <!-- Add MonthlyFee Modal -->
+    @if(showAddModal()){
+    <app-monthly-fee-add [cashboxOptions]="optionSelectCashboxId()" [memberOptions]="optionSelectMemberId()"
+        (close)="showAddModal.set(false)" (save)="addEntity($event)" />
+    }
     <!-- Edit MonthlyFee Modal -->
-    @if (showEditModal() && selectedMonthlyFee !== null) {
-    <app-monthly-fee-edit [monthlyFee]="selectedMonthlyFee()!" [cashboxOptions]="optionSelectCashboxId()"
-        [memberOptions]="optionSelectMemberId()" (close)="showEditModal.set(false)" (edit)="updateMonthlyFee($event)" />
+    @if (showEditModal() && selectedEntity() !== null) {
+    <app-monthly-fee-edit [entity]="selectedEntity()!" [cashboxOptions]="optionSelectCashboxId()"
+        [memberOptions]="optionSelectMemberId()" (close)="showEditModal.set(false)" (edit)="updateEntity($event)" />
     }
     <!-- Delete MonthlyFee Modal -->
-    @if (showDeleteModal() && selectedMonthlyFee !== null) {
-    <app-monthly-fee-delete [monthlyFee]="selectedMonthlyFee()!" (close)="showDeleteModal.set(false)"
-        (delete)="deleteMonthlyFee($event)" />
+    @if (showDeleteModal() && selectedEntity() !== null) {
+    <app-monthly-fee-delete [entity]="selectedEntity()!" (close)="showDeleteModal.set(false)"
+        (delete)="deleteEntity($event)" />
     }
-    <!-- Paginación -->
-    <app-pagination [currentPage]="currentPage()" [totalPages]="totalPages()" (pageChanged)="onPageChange($event)" />
-</div>
+</app-entity-layout>

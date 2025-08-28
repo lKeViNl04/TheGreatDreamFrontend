@@ -1,35 +1,19 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, computed, input } from '@angular/core';
 
 import { MonthlyExpenseDTO } from '../../models/monthly-expense-dto';
+import { BaseFormDelete } from '../../../../../../shared/abstract/base-form-delete';
+import { ModalConfirm } from '../../../../../../shared/mod/modal-confirm/modal-confirm';
 
 @Component({
   selector: 'app-monthly-expense-delete',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './monthly-expense-delete.html',
-   
+  imports: [ModalConfirm],
+  templateUrl: './monthly-expense-delete.html'
 })
-export class MonthlyExpenseDelete {
+export class MonthlyExpenseDelete extends BaseFormDelete<MonthlyExpenseDTO> {
   // ===== Inputs & Outputs =====
-  readonly monthlyExpense = input.required<MonthlyExpenseDTO>();
-  readonly close = output<void>()
-  readonly delete = output<number>();
+  readonly entity = input.required<MonthlyExpenseDTO>();
   // ===== Estados internos =====
-  readonly expenseId = computed(() => this.monthlyExpense()?.id ?? null);
-  readonly expenseDate = computed(() => this.monthlyExpense()?.date ?? '');
-  readonly expenseAmount = computed(() => this.monthlyExpense()?.amount ?? 0);
-
-  // ===== Métodos públicos =====
-  onCancel() {
-    this.close.emit();
-  }
-
-  onConfirm() {
-    const id = this.expenseId();
-    if (id != null) {
-      this.delete.emit(id);
-      this.close.emit();
-    }
-  }
+  readonly expenseDate = computed(() => this.entity()?.date ?? '');
+  readonly expenseAmount = computed(() => this.entity()?.amount ?? 0);
 }

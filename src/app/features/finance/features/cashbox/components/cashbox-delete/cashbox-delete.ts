@@ -1,36 +1,20 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { CashboxDTO } from '../../models/cashbox-dto';
+import { BaseFormDelete } from '../../../../../../shared/abstract/base-form-delete';
+import { ModalConfirm } from '../../../../../../shared/mod/modal-confirm/modal-confirm';
 
 @Component({
   selector: 'app-cashbox-delete',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './cashbox-delete.html',
-   
+  imports: [CommonModule, ModalConfirm],
+  templateUrl: './cashbox-delete.html'
 })
-export class CashboxDelete {
+export class CashboxDelete extends BaseFormDelete<CashboxDTO>{
   // ===== Inputs & Outputs =====
-  readonly cashbox = input.required<CashboxDTO>();
-  readonly close = output<void>();
-  readonly delete = output<number>();
+  readonly entity = input.required<CashboxDTO>();
   // ===== Estados internos =====
-  readonly cashBoxId = computed(() => this.cashbox()?.id ?? null);
-  readonly cashBoxYear = computed(() => this.cashbox()?.year ?? '')
-  readonly cashBoxMonth = computed(() => this.cashbox()?.month ?? '');
-  // ===== Métodos públicos =====
-  onCancel() {
-    this.close.emit();
-  }
-
-  onConfirm() {
-    const id = this.cashBoxId();
-    if (id != null) {
-      this.delete.emit(id);
-      this.close.emit();
-    }
-  }
-
-
+  readonly cashBoxYear = computed(() => this.entity()?.year ?? '')
+  readonly cashBoxMonth = computed(() => this.entity()?.month ?? '');
 }

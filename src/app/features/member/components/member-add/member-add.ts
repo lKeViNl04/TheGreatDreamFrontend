@@ -1,87 +1,64 @@
-import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component, computed } from '@angular/core';
 
 import { MemberDTO } from '../../models/member-dto';
 
-import { FormInput } from '../../../../components/form-input/form-input';
-import { FormSelect } from '../../../../components/form-select/form-select';
-import { NotificationService } from '../../../../services/notification-service/notification-service';
+import { FormInput } from '../../../../shared/components/form-input/form-input';
+import { FormSelect } from '../../../../shared/components/form-select/form-select';
+import { BaseFormAdd } from '../../../../shared/abstract/base-form-add';
+import { ModalShell } from '../../../../shared/mod/modal-shell/modal-shell';
 
 @Component({
   selector: 'app-member-add',
   standalone: true,
-  imports: [CommonModule, FormsModule, FormInput, FormSelect],
+  imports: [FormInput, FormSelect, ModalShell],
   templateUrl: './member-add.html',
-   
 })
 
-export class MemberAdd {
-  // ===== Inyección de servicios =====
-  private readonly notification = inject(NotificationService);
-  // ===== Outputs =====
-  readonly close = output<void>();
-  readonly save = output<MemberDTO>();
-  // ===== Estados internos =====
-  readonly member = signal<Partial<MemberDTO>>({
-    firstName: '',
-    lastName: '',
-    slots: '',
-    status: undefined
-  });
-
+export class MemberAdd extends BaseFormAdd<MemberDTO>{
+  // ===== Estados =====
   readonly statuses: { value: string, label: string }[] = [
     { value: 'Activo', label: 'ACTIVO' },
     { value: 'EXmiembro', label: 'EXMIEMBRO' }
   ];
-  // ===== Computed properties ====
-  readonly isFirstNameValid = computed(() => (this.member().firstName ?? '').trim().length > 0);
-  readonly isLastNameValid = computed(() => (this.member().lastName ?? '').trim().length > 0)
-  readonly isSlotsValid = computed(() => (this.member().slots ?? '').trim().length > 0);
-  readonly isStatusValid = computed(() => this.statuses.some(status => status.value === this.member().status));
-
-  readonly isFormValid = computed(() =>
+  // ===== Constructor =====
+  constructor(){
+    super();
+    this.entity.set({
+      firstName: '',
+      lastName: '',
+      slot: '',
+      status: undefined
+    });
+  }
+  // ===== Computed properties =====
+  readonly isFirstNameValid = computed(() => (this.entity().firstName ?? '').trim().length > 0);
+  readonly isLastNameValid = computed(() => (this.entity().lastName ?? '').trim().length > 0)
+  readonly isSlotsValid = computed(() => (this.entity().slot ?? '').trim().length > 0);
+  readonly isStatusValid = computed(() => this.statuses.some(status => status.value === this.entity().status));
+  //===== Override =====
+  override formValid = computed(() =>
     this.isFirstNameValid() &&
     this.isLastNameValid() &&
     this.isSlotsValid() &&
     this.isStatusValid()
   );
-  // ===== Métodos públicos =====
-  /*Valida y envía el formulario si los campos obligatorios están completos.*/
-  submitForm(): void {
-    if (this.isFormValid()) {
-      const m = this.member();
-      const payload: MemberDTO = {
-        ...(m as MemberDTO),
-        firstName: m.firstName?.trim() || '',
-        lastName: m.lastName?.trim() || '',
-        slots: m.slots?.trim() || '',
-        status: m.status?.trim() || ''
-      }
-      // Emitir el evento de guardado con el DTO completo
-      this.save.emit(payload);
-      this.close.emit();
-    } else {
-      this.notification.warn('Warn', 'Please fill in all required fields correctly: ' + [
-        !this.isFirstNameValid() && '"FirstName"',
-        !this.isLastNameValid() && '"LastName"',
-        !this.isSlotsValid() && '"Slots"',
-        !this.isStatusValid() && '"Status"'
-      ].filter(Boolean).join(', '));
-      console.warn('Formulario inválido', {
-        firstName: this.isFirstNameValid(),
-        lastName: this.isLastNameValid(),
-        slots: this.isSlotsValid(),
-        status: this.isStatusValid()
-      });
-    }
+
+  override buildPayload(e: Partial<MemberDTO>): MemberDTO {
+    return {
+      ...(e as MemberDTO),
+      firstName: e.firstName?.trim() || '',
+      lastName: e.lastName?.trim() || '',
+      slot: e.slot?.trim() || '',
+      status: e.status?.trim() || ''
+    };
   }
 
-  patchMember(patch: Partial<MemberDTO>) {
-    this.member.update(m => ({ ...m, ...patch }));
-  }
-
-  onCancel(): void {
-    this.close.emit();
+  override invalidFields(): string[] {
+    return [
+      !this.isFirstNameValid() && '"FirstName"',
+      !this.isLastNameValid()  && '"LastName"',
+      !this.isSlotsValid()     && '"Slot"',
+      !this.isStatusValid()    && '"Status"',
+    ].filter(Boolean) as string[];
   }
 }

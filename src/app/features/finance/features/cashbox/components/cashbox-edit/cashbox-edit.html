@@ -1,33 +1,13 @@
-<!-- Overlay -->
-<div class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-    <!-- Modal -->
-    <div class="bg-neutral-dark rounded-xl shadow-lg w-full max-w-md p-6 relative">
-        <h2 class="text-xl font-bold text-white mb-4">Edit Cashbox</h2>
-        <!-- Formulario -->
-        <form (ngSubmit)="submitForm()" class="flex  justify-center gap-4">
-            <div class="flex gap-2">
-                @if (editCashbox(); as cashbox) {
-                <!-- Year -->
-                <app-form-select label="Year" name="year" [required]="true" 
-                [options]="years" [(model)]="cashbox.year" (modelChange)="patchEdit({ year: $event })"
-                selectClass="w-full" />
-                <!-- Month -->
-                <app-form-select label="Month" name="month" [required]="true" 
-                [options]="months" [(model)]="cashbox.month" (modelChange)="patchEdit({ month: $event })"
-                selectClass="w-full" />
-                }
-            </div>
-            <!-- Botones -->
-            <div class="flex justify-end gap-2 ps-4 border-s border-white/10">
-                <button type="button" (click)="onCancel()"
-                    class="px-4 py-2 rounded-md border border-gray-300 text-sm text-white hover:bg-red-500 hover:border-red-500">
-                    Cancel
-                </button>
-                <button type="submit"
-                    class="px-4 py-2 rounded-md bg-caribbean-green text-sm font-bold text-white hover:bg-mountain-meadow">
-                    Save
-                </button>
-            </div>
-        </form>
+<app-modal-shell (close)="onCancel()" (save)="submitForm()">
+    <span modal-title>Edit Cashbox</span>
+    <div modal-body class="flex flex-col gap-4">
+        @if (editEntity(); as cashbox) {
+        <!-- Year -->
+        <app-form-select label="Year" name="year" [required]="true" [options]="years" [(model)]="cashbox.year"
+            (modelChange)="patchEntityEdit({ year: $event })" selectClass="w-full" />
+        <!-- Month -->
+        <app-form-select label="Month" name="month" [required]="true" [options]="months" [(model)]="cashbox.month"
+            (modelChange)="patchEntityEdit({ month: $event })" selectClass="w-full" />
+        }
     </div>
-</div>
+</app-modal-shell>

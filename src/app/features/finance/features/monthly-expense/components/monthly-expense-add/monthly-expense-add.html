@@ -1,38 +1,18 @@
-<!-- Overlay -->
-<div class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
-  <!-- Modal -->
-  <div class="bg-neutral-dark rounded-xl shadow-lg w-full max-w-md p-6 relative">
-    <!-- Título -->
-    <h2 class="text-xl font-bold text-white mb-6">Add Monthly Expense</h2>
-    <!-- Formulario -->
-    <form (ngSubmit)="submitForm()" class="flex flex-col gap-4">
-      <!-- CashboxId -->
-      <app-form-select label="Cashbox ID" name="cashboxId" [required]="true" [options]="cashboxOptions()"
-        [(model)]="monthlyExpense().cashBoxId" (modelChange)="patchMonthlyExpense({ cashBoxId: $event })"
-        selectClass="w-full" />
-      <!-- Amount -->
-      <app-form-input label="Amount" name="amount" type="number" placeholder="Add a Amount. Ej: 1000" [required]="true"
-        [(model)]="monthlyExpense().amount" (modelChange)="patchMonthlyExpense({ amount: $event })"
-        inputClass="w-full" />
-      <!-- Date -->
-      <app-form-input label="Date" name="date" type="date" [required]="true" 
-        [(model)]="monthlyExpense().date" (modelChange)="patchMonthlyExpense({ date: $event })"
-        inputClass="w-full" />
-      <!-- Description -->
-      <app-form-textarea label="Description" name="description" [required]="true" 
-        [(model)]="monthlyExpense().description" (modelChange)="patchMonthlyExpense({ description: $event })"
-        placeholder="Add a description of the expense" textareaClass="w-full" />
-      <!-- Botones -->
-      <div class="flex justify-end gap-3 pt-4 border-t border-white/10">
-        <button type="button" (click)="onCancel()"
-          class="px-4 py-2 rounded-md border border-gray-300 text-sm text-white hover:bg-red-500 hover:border-red-500">
-          Cancel
-        </button>
-        <button type="submit"
-          class="px-4 py-2 rounded-md bg-caribbean-green text-sm font-bold text-white hover:bg-mountain-meadow">
-          Save
-        </button>
-      </div>
-    </form>
+<app-modal-shell (close)="onCancel()" (save)="submitForm()">
+  <span modal-title>Add Monthly Expense</span>
+  <div modal-body class="flex flex-col gap-4">
+    <!-- CashboxId -->
+    <app-form-select label="Cashbox ID" name="cashboxId" [required]="true" [options]="cashboxOptions()"
+      [(model)]="entity().cashBoxId" (modelChange)="patchEntityAdd({ cashBoxId: $event })" selectClass="w-full" />
+    <!-- Amount -->
+    <app-form-input label="Amount" name="amount" type="number" placeholder="Add a Amount. Ej: 1000" [required]="true"
+      [(model)]="entity().amount" (modelChange)="patchEntityAdd({ amount: $event })" inputClass="w-full" />
+    <!-- Date -->
+    <app-form-input label="Date" name="date" type="date" [required]="true" [(model)]="entity().date"
+      (modelChange)="patchEntityAdd({ date: $event })" inputClass="w-full" />
+    <!-- Description -->
+    <app-form-textarea label="Description" name="description" [required]="true" [(model)]="entity().description"
+      (modelChange)="patchEntityAdd({ description: $event })" placeholder="Add a description of the expense"
+      textareaClass="w-full" />
   </div>
-</div>
+</app-modal-shell>

@@ -1,32 +1,23 @@
-import { Component, inject, ChangeDetectionStrategy, output, signal, input, effect, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component, input, effect, computed } from '@angular/core';
 
 import { MonthlyFeeDTO } from '../../models/monthly-fee-dto';
 
-import { FormInput } from '../../../../../../components/form-input/form-input';
-import { FormSelect } from '../../../../../../components/form-select/form-select';
-import { NotificationService } from '../../../../../../services/notification-service/notification-service';
+import { FormInput } from '../../../../../../shared/components/form-input/form-input';
+import { FormSelect } from '../../../../../../shared/components/form-select/form-select';
 import { MemberDTO } from '../../../../../member/models/member-dto';
+import { BaseFormEdit } from '../../../../../../shared/abstract/base-form-edit';
+import { ModalShell } from '../../../../../../shared/mod/modal-shell/modal-shell';
 
 @Component({
   selector: 'app-monthly-fee-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, FormInput, FormSelect],
+  imports: [FormInput, FormSelect, ModalShell],
   templateUrl: './monthly-fee-edit.html',
-   
 })
-export class MonthlyFeeEdit {
-  // ===== Inyección de servicios =====
-  private readonly notification = inject(NotificationService);
+export class MonthlyFeeEdit extends BaseFormEdit<MonthlyFeeDTO> {
   // ===== Inputs & Outputs =====
-  readonly editFee = signal<MonthlyFeeDTO | null>(null);
-  readonly monthlyFee = input<MonthlyFeeDTO | null>(null);
   readonly cashboxOptions = input<{ value: any; label: string }[]>([]);
   readonly memberOptions = input<{ value: MemberDTO; label: string }[]>([]);
-  readonly close = output<void>();
-  readonly edit = output<MonthlyFeeDTO>();
-
   // ===== Estados =====
   readonly statusOptions: { value: any, label: string }[] = [
     { value: "Pagado", label: "PAGADO" },
@@ -36,60 +27,55 @@ export class MonthlyFeeEdit {
   ]
   // ====== Constructor ====
   constructor() {
-    // Sincronizar editableFee cada vez que monthlyFee cambia
+    super();
     effect(() => {
-      const fee = this.monthlyFee();
-      this.editFee.set(fee ? structuredClone(fee) : null);
-    });
-
-    effect(() => {
-      const fee = this.editFee();
+      const fee = this.editEntity();
       const members = this.memberOptions();
       if (fee && fee.member && members.length > 0) {
         const matchedMember = members.find(m => m.value.id === fee.member.id);
         if (matchedMember && matchedMember.value !== fee.member) {
-          this.editFee.update(f => f ? { ...f, member: matchedMember.value } : f);
+          this.editEntity.update(f => f ? { ...f, member: matchedMember.value } : f);
         }
       }
     });
   }
   // ====== Computed ====
   readonly isCashBoxIdValid = computed(() => {
-    const fee = this.editFee();
+    const fee = this.editEntity();
     return !!fee?.cashBoxId && Number(fee.cashBoxId) > 0;
   });
 
   readonly isMemberIdValid = computed(() => {
-    const fee = this.editFee();
+    const fee = this.editEntity();
     return fee?.member?.id != null && fee.member.id > 0;
   });
 
   readonly isAssignedAmountValid = computed(() => {
-    const fee = this.editFee();
+    const fee = this.editEntity();
     return fee?.assignedAmount != null && Number(fee.assignedAmount) > 0;
   });
 
   readonly isPaidValid = computed(() => {
-    const fee = this.editFee();
+    const fee = this.editEntity();
     return fee?.paid != null && Number(fee.paid) >= 0;
   });
 
   readonly isStatusValid = computed(() => {
-    const fee = this.editFee();
+    const fee = this.editEntity();
     return this.statusOptions.some(o => o.value === fee?.status);
   });
-
-  readonly formValid = computed(() =>
+  // ===== Override =====
+  override formValid = computed(() =>
     this.isCashBoxIdValid() &&
     this.isMemberIdValid() &&
     this.isAssignedAmountValid() &&
     this.isPaidValid() &&
     this.isStatusValid()
   );
-  // ===== Metodos privados =====
-  private isSame(): boolean {
-    const originalFee = this.monthlyFee();
-    const editableFee = this.editFee();
+
+  protected override isSame(): boolean {
+    const originalFee = this.entity();
+    const editableFee = this.editEntity();
     if (!originalFee || !editableFee) return true;
     return (
       originalFee.cashBoxId === editableFee.cashBoxId &&
@@ -99,38 +85,14 @@ export class MonthlyFeeEdit {
       originalFee.status === editableFee.status
     );
   }
-  // ===== Métodos public =====
-  submitForm(): void {
-    if (!this.formValid()) {
-      this.notification.warn(
-        'Warn',
-        'Please fill in all required fields correctly: ' +
-        [
-          !this.isCashBoxIdValid() && '"Cashbox"',
-          !this.isMemberIdValid() && '"Member"',
-          !this.isAssignedAmountValid() && '"Assigned Amount"',
-          !this.isPaidValid() && '"Paid"',
-          !this.isStatusValid() && '"Status"',
-        ].filter(Boolean).join(', ')
-      );
-      return;
-    }
-    if (this.isSame()) {
-      this.notification.warn('Warn', 'Please edit the box before saving.');
-      return;
-    }
-    const editFee = this.editFee();
-    if (editFee) {
-      this.edit.emit(editFee);
-      this.close.emit();
-    }
-  }
 
-  patchEdit(patch: Partial<MonthlyFeeDTO>) {
-    this.editFee.update(f => (f ? { ...f, ...patch } : f));
+  override invalidFields(): string[] {
+    return [
+      !this.isCashBoxIdValid() && '"Cashbox"',
+      !this.isMemberIdValid() && '"Member"',
+      !this.isAssignedAmountValid() && '"Assigned Amount"',
+      !this.isPaidValid() && '"Paid"',
+      !this.isStatusValid() && '"Status"',
+    ].filter(Boolean) as string[];
   }
-  onCancel(): void {
-    this.close.emit();
-  }
-
 }

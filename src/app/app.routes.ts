@@ -9,6 +9,6 @@ export const routes: Routes = [
         path: 'finance',
         loadChildren: () => import( /* webpackChunkName: "finance-route" */ './features/finance/finance.routes').then(m => m.financeRoutes)
     },
-    { path: '**', loadComponent: () => import( /* webpackChunkName: "not-found-page" */'./features/not-found/pages/not-found/not-found').then(nt => nt.NotFound) },
+    { path: '**', loadComponent: () => import( /* webpackChunkName: "not-found-page" */'./features/not-found/not-found').then(nt => nt.NotFound) },
 ];
 

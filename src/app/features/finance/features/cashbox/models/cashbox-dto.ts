@@ -2,7 +2,7 @@ export interface CashboxDTO {
     id: number;
     month: number;
     year: number;
-    amountCollected: number;
+    totalCollected: number;
     totalSpent: number;
-    balance: number;
+    totalBalance: number;
 }
